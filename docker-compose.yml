@@ -8,8 +8,7 @@ volumes:
 services:
   tailormap:
     container_name: ${COMPOSE_PROJECT_NAME}-server
-    #image: ${TAILORMAP_IMAGE:-ghcr.io/tailormap/tailormap}:${VERSION:-snapshot}
-    image: tailormap-custom
+    image: ${TAILORMAP_IMAGE:-ghcr.io/tailormap/tailormap}:${VERSION:-snapshot}
     # Building is optional, only when adding extra Angular libraries with additional components
     build:
       # This GitHub repository contains an empty Angular project with the NPM packages from tailormap as
