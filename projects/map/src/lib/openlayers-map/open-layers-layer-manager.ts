@@ -167,7 +167,7 @@ export class OpenLayersLayerManager implements LayerManagerModel {
 
   private updateFilterIfChanged(layer: LayerModel, olLayer: BaseLayer) {
     // For now, GeoServer & WMS only
-    if (!LayerTypesHelper.isWmsLayer(layer) || layer.serverType !== ServerType.GEOSERVER) {
+    if (!LayerTypesHelper.isWmsLayer(layer)) {
       return;
     }
     const existingProps = OlLayerHelper.getLayerProps(olLayer);
