@@ -1,16 +1,100 @@
-Copy of Tailormap viewer with changes made to launch the Tailormap server, Postgis database and Qgisserver in one container
+# Tailormap Viewer with Enhanced Server Launch and QGIS Server Support
 
-Filtering!
+This project is a customized version of the Tailormap Viewer, modified to seamlessly launch the following services in a single container:  
 
-Filtering does not work for QGIS server WMS layers. The cause is that CQL_FILTER is not supported by qgisserver, however, I have created a workaround. I created a plugin for QGIS-server that intercepts the CQL_FILTER param and modifies it to fit the QGIS server FILTER synthax. The plugin is found in the folder 'qgisserver_plugins' and is automatically loaded. However, the official tailormap image does not pass the CQL_FILTER parameters if the ServerType != GEOSERVER. Therefore I have created an alternative image that does passes the CQL_FILTER regardless of server type. Simply build the image locally and modify the Docker-compose.yml. 
+- **Tailormap Server**  
+- **PostGIS Database**  
+- **QGIS Server**
 
-Want to add more Qgis server plugins? Add them to the 'qgisserver_plugins' folder and recompose the container to load them.
+---
 
-'qgisserver_data' is mounted to the Qgis server image and therefore, any files that are placed in the folder outside of the container will also appear in the container. Example: find your project through https://<your_site>/ows/?MAP=/home/qgisserver/world/world.qgs
+## 🚀 Features  
 
-In the docker-compose.override.yml the ports are set:
-Tailormap is set to localhost:8080
-Qgisserver is set to localhost:8081
-Postgis database is set to localhost:5432
+### 1. **Filtering Support for QGIS Server WMS Layers**  
+By default, **CQL_FILTER** is not supported by QGIS Server. To overcome this limitation:  
 
-Reverse proxy these services on a server in order to use them. Docker container internal communication does not work for the Tailormap viewer.
+- A custom plugin for QGIS Server has been developed.  
+- The plugin intercepts the `<code>CQL_FILTER</code>` parameter and converts it to the QGIS Server `<code>FILTER</code>` syntax.  
+
+<p><strong>📂 Location of the Plugin:</strong></p>  
+<p>The plugin resides in the <code>qgisserver_plugins</code> folder and is automatically loaded when the container starts.</p>
+
+---
+
+### 2. **Custom Tailormap Docker Image**  
+The official Tailormap image <strong>does not pass <code>CQL_FILTER</code> parameters</strong> if <code>ServerType !== GEOSERVER</code>.  
+
+<p>To address this:</p>  
+<ul>
+  <li>A custom Tailormap image has been created to pass the <code>CQL_FILTER</code> parameter regardless of the <code>ServerType</code>.</li>
+  <li><strong>Steps:</strong></li>
+  <ol>
+    <li>Build the custom image locally.</li>
+    <li>Modify the <code>docker-compose.yml</code> file to use this image.</li>
+  </ol>
+</ul>
+
+---
+
+## 🔧 Adding QGIS Server Plugins  
+<p>Want to add more plugins to your QGIS Server?</p>
+<ul>
+  <li>Place the plugin files in the <code>qgisserver_plugins</code> folder.</li>
+  <li>Recompose the container to automatically load the new plugins.</li>
+</ul>
+
+---
+
+## 📂 File and Data Management  
+
+### QGIS Server Data
+<p>The <code>qgisserver_data</code> folder is mounted to the QGIS Server container. This means any files placed in this folder will be available within the container.</p>  
+
+<p><strong>Example:</strong></p>
+<pre>
+https://&lt;your_site&gt;/ows/?MAP=/home/qgisserver/world/world.qgs
+</pre>
+
+---
+
+## ⚙️ Port Configuration  
+
+<p>In the <code>docker-compose.override.yml</code> file, ports are configured as follows:</p>  
+
+<table>
+  <thead>
+    <tr>
+      <th>Service</th>
+      <th>URL</th>
+      <th>Port</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Tailormap</strong></td>
+      <td><code>http://localhost:8080</code></td>
+      <td><code>8080</code></td>
+    </tr>
+    <tr>
+      <td><strong>QGIS Server</strong></td>
+      <td><code>http://localhost:8081</code></td>
+      <td><code>8081</code></td>
+    </tr>
+    <tr>
+      <td><strong>PostGIS Database</strong></td>
+      <td>N/A</td>
+      <td><code>5432</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To access these services externally, reverse proxy them through a server.</p>
+
+---
+
+## 🛑 Important Note: Internal Communication Limitation  
+Internal communication between Docker containers does <strong>not work</strong> for the Tailormap Viewer. Use a reverse proxy to enable communication between the services.
+
+---
+
+<p>Enjoy using your enhanced Tailormap Viewer setup with integrated QGIS Server and PostGIS support! 🎉</p>
