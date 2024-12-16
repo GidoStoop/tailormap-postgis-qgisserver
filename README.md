@@ -97,4 +97,103 @@ Internal communication between Docker containers does <strong>not work</strong> 
 
 ---
 
+### Server configurations:
+
+<p><strong>Apache2:</strong></p>
+
+<VirtualHost *:443>
+    ServerName <sitename>
+
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/<sitename>/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/<sitename>/privkey.pem
+
+    ProxyPass / http://127.0.0.1:8080/
+    ProxyPassReverse / http://127.0.0.1:8080/
+
+    <Location /qgisserver/>
+        ProxyPass http://127.0.0.1:8081/
+        ProxyPassReverse http://127.0.0.1:8081/
+        RequestHeader set Host %{HTTP_HOST}s
+        RequestHeader set X-Real-IP %{REMOTE_ADDR}s
+        RequestHeader set X-Forwarded-For %{REMOTE_ADDR}s
+        RequestHeader set X-Forwarded-Proto https
+    </Location>
+</VirtualHost>
+
+<IfModule mod_proxy.c>
+    Listen 6543
+    <VirtualHost *:6543>
+        ProxyPass / http://localhost:5432/
+        ProxyPassReverse / http://localhost:5432/
+    </VirtualHost>
+</IfModule>
+
+<p><strong>Apache2:</strong></p>
+
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+	worker_connections 768;
+}
+
+http {
+
+	sendfile on;
+	tcp_nopush on;
+	types_hash_max_size 2048;
+
+	include /etc/nginx/mime.types;
+	default_type application/octet-stream;
+
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+	ssl_prefer_server_ciphers on;
+
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
+
+	gzip on;
+
+	include /etc/nginx/conf.d/*.conf;
+	include /etc/nginx/sites-enabled/*;
+
+	server {
+		server_name <yoursite>;
+		location / {
+			proxy_pass http://127.0.0.1:8080/;
+
+		}
+	
+	location /qgisserver/ {
+        proxy_pass http://127.0.0.1:8081/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/<yoursite>/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/<yoursite>/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+	}
+}
+stream {
+    server {
+      listen 6543;
+    
+      proxy_connect_timeout 60s;
+      proxy_socket_keepalive on;
+      proxy_pass localhost:5432;
+    }
+}
+
+Open firewall port for the postgis-server: 
+<pre>Sudo ufw allow 6543</pre>
+
 <p>Enjoy using your enhanced Tailormap Viewer setup with integrated QGIS Server and PostGIS support! 🎉</p>
