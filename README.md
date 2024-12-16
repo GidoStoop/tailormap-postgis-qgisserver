@@ -100,7 +100,9 @@ Internal communication between Docker containers does <strong>not work</strong> 
 ### Server configurations:
 
 <p><strong>Apache2:</strong></p>
-<pre>```<VirtualHost *:443>
+```text
+code();
+<VirtualHost *:443>
     ServerName <sitename>
 
     SSLEngine on
@@ -126,11 +128,13 @@ Internal communication between Docker containers does <strong>not work</strong> 
         ProxyPass / http://localhost:5432/
         ProxyPassReverse / http://localhost:5432/
     </VirtualHost>
-</IfModule>```</pre>
+</IfModule>```
 
 <p><strong>Apache2:</strong></p>
 
-<pre>```user www-data;
+```text
+code();
+user www-data;
 worker_processes auto;
 pid /run/nginx.pid;
 include /etc/nginx/modules-enabled/*.conf;
@@ -190,7 +194,8 @@ stream {
       proxy_socket_keepalive on;
       proxy_pass localhost:5432;
     }
-}```</pre>
+}
+```
 
 Open firewall port for the postgis-server: 
 <pre>Sudo ufw allow 6543</pre>
