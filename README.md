@@ -83,7 +83,7 @@ https://&lt;your_site&gt;/ows/?MAP=/home/qgisserver/world/world.qgs
     <tr>
       <td><strong>PostGIS Database</strong></td>
       <td>N/A</td>
-      <td><code>5432</code></td>
+      <td><code>6543</code></td>
     </tr>
   </tbody>
 </table>
@@ -100,10 +100,9 @@ Internal communication between Docker containers does <strong>not work</strong> 
 ### Server configurations:
 
 <p><strong>Apache2:</strong></p>
-```text
-code();
-<VirtualHost *:443>
-    ServerName <sitename>
+<pre>
+&lt;VirtualHost *:443>
+    ServerName &lt;sitename>
 
     SSLEngine on
     SSLCertificateFile /etc/letsencrypt/live/<sitename>/fullchain.pem
@@ -112,28 +111,27 @@ code();
     ProxyPass / http://127.0.0.1:8080/
     ProxyPassReverse / http://127.0.0.1:8080/
 
-    <Location /qgisserver/>
+    &lt;Location /qgisserver/>
         ProxyPass http://127.0.0.1:8081/
         ProxyPassReverse http://127.0.0.1:8081/
         RequestHeader set Host %{HTTP_HOST}s
         RequestHeader set X-Real-IP %{REMOTE_ADDR}s
         RequestHeader set X-Forwarded-For %{REMOTE_ADDR}s
         RequestHeader set X-Forwarded-Proto https
-    </Location>
-</VirtualHost>
+    &lt;/Location>
+&lt;/VirtualHost>
 
-<IfModule mod_proxy.c>
+&lt;IfModule mod_proxy.c>
     Listen 6543
-    <VirtualHost *:6543>
+    &lt;VirtualHost *:6543>
         ProxyPass / http://localhost:5432/
         ProxyPassReverse / http://localhost:5432/
-    </VirtualHost>
-</IfModule>```
+    &lt;/VirtualHost>
+&lt;/IfModule></pre>
 
 <p><strong>Apache2:</strong></p>
 
-```text
-code();
+<pre>
 user www-data;
 worker_processes auto;
 pid /run/nginx.pid;
@@ -164,7 +162,7 @@ http {
 	include /etc/nginx/sites-enabled/*;
 
 	server {
-		server_name <yoursite>;
+		server_name &lt;yoursite>;
 		location / {
 			proxy_pass http://127.0.0.1:8080/;
 
@@ -179,8 +177,8 @@ http {
     }
 
     listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/<yoursite>/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/<yoursite>/privkey.pem; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/&lt;yoursite>/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/&lt;yoursite>/privkey.pem; # managed by Certbot
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
@@ -195,9 +193,9 @@ stream {
       proxy_pass localhost:5432;
     }
 }
-```
+</pre>
 
 Open firewall port for the postgis-server: 
-<pre>Sudo ufw allow 6543</pre>
+<pre>sudo ufw allow 6543</pre>
 
 <p>Enjoy using your enhanced Tailormap Viewer setup with integrated QGIS Server and PostGIS support! 🎉</p>
