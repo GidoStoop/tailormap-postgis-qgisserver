@@ -105,8 +105,8 @@ Internal communication between Docker containers does <strong>not work</strong> 
     ServerName &lt;sitename>
 
     SSLEngine on
-    SSLCertificateFile /etc/letsencrypt/live/<sitename>/fullchain.pem
-    SSLCertificateKeyFile /etc/letsencrypt/live/<sitename>/privkey.pem
+    SSLCertificateFile /etc/letsencrypt/live/&lt;sitename>/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/&lt;sitename>/privkey.pem
 
     ProxyPass / http://127.0.0.1:8080/
     ProxyPassReverse / http://127.0.0.1:8080/
