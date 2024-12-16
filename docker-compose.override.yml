@@ -14,4 +14,4 @@ services:
       - ${SERVER_ADDRESS:-127.0.0.1}:${LOCALHOST_PORT:-8081}:80
   postgis:
     ports:
-      - ${SERVER_ADDRESS:-127.0.0.1}:${LOCALHOST_PORT:-5432}:5433
+      - ${SERVER_ADDRESS:-0.0.0.0}:${LOCALHOST_PORT:-5432}:5432
